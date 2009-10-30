@@ -1,0 +1,5 @@
+keystore "${user.home}${/}.keystore";
+
+grant codebase "file:///*" {
+    permission java.security.AllPermission;
+}
