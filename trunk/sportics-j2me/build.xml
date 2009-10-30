@@ -1,0 +1,270 @@
+<project name='Sportics.net Micoredition client' default='build' basedir='.'>
+
+  <taskdef resource='proguard/ant/task.properties' classpath='${basedir}/contrib/proguard.jar' />
+
+  <property name='project.name' value='Sportics'/>
+  <property name='src.dir' value='${basedir}/src/main/java'/>
+  <property name='src.res.dir' value='${basedir}/src/main/resources'/>
+  <property name='test.dir' value='${basedir}/src/test/java'/>
+  <property name='test.res.dir' value='${basedir}/src/test/resources'/>
+  <property name='target' value='${basedir}/target'/>
+  <property name='build.dir' value='${target}/bin'/>
+  <property name='classes.dir' value='${build.dir}/classes'/>
+  <property name='testclasses.dir' value='${build.dir}/test-classes'/>
+  <property name='javadoc.dir' value='${build.dir}/javadoc'/>
+  <property name='dist.dir' value='${target}/dist'/>
+
+  <property environment='env'/>
+
+  <path id='combined.classpath'>
+    <filelist dir='${basedir}/contrib'>
+      <file name='microemulator.jar' />
+      <file name='microemu-device-large.jar' />
+    </filelist>
+    <filelist dir='${basedir}/lib'>
+      <file name='cldcapi11.jar' />
+      <file name='junit-3.8.1.jar' />
+      <file name='microemu-jsr-75-2.0.3-SNAPSHOT.jar' />
+      <file name='midpapi20.jar' />
+      <file name='openlapi-jsr179-0.9.11.jar' />
+      <!--file name='microemu-jsr-82.jar' /-->
+    </filelist>
+    <filelist dir='${basedir}/contrib'>
+      <file name='proguard.jar' />
+      <file name='openlapi-0.9.11.jar' />
+      <file name='kxml2-min-2.3.0.jar' />
+      <file name='proguardgui.jar' />
+      <file name='retrace.jar' />
+      <file name='bluecove-2.0.3.jar' />
+    </filelist>
+  </path>
+
+  <path id='build.classpath'>
+    <filelist dir='${basedir}/lib'>
+      <file name='cldcapi11.jar' />
+      <file name='junit-3.8.1.jar' />
+      <file name='microemu-jsr-75-2.0.3-SNAPSHOT.jar' />
+      <file name='midpapi20.jar' />
+      <file name='openlapi-jsr179-0.9.11.jar' />
+      <file name='microemu-jsr-82.jar' />
+    </filelist>
+  </path>
+
+  <path id='test.classpath2'>
+    <filelist dir='${basedir}/contrib'>
+      <file name='microemulator.jar' />
+      <file name='microemu-device-large.jar' />
+      <file name='proguard.jar' />
+      <file name='openlapi-0.9.11.jar' />
+      <file name='kxml2-min-2.3.0.jar' />
+      <file name='proguardgui.jar' />
+      <file name='retrace.jar' />
+      <file name='bluecove-2.0.3.jar' />
+    </filelist>
+  </path>
+
+  <path id='test.classpath'>
+    <fileset dir='contrib'>
+      <include name='*.jar'/>
+    </fileset>
+  </path>
+
+  <target name='init'>
+<!--
+    <propertyfile file='${project.name}-build.properties' comment='Build information'>
+        <entry key='build.date' type='date' value='now' pattern='dd MMMM yyyy HH:mm:ss z'/>
+        <entry key='build.version' value='trunk'/>
+    </propertyfile>
+-->
+    <loadproperties srcFile='${project.name}-build.properties'/>
+
+    <mkdir dir='${build.dir}'/>
+    <mkdir dir='${classes.dir}'/>
+    <mkdir dir='${testclasses.dir}'/>
+    <mkdir dir='${classes.dir}/META-INF'/>
+    <mkdir dir='${javadoc.dir}'/>
+  </target>
+
+  <target name='compile' depends='init'>
+    <property name='build.classpath' refid='build.classpath' />
+    <property name='test.classpath2' refid='test.classpath2' />
+    <echo message='Using CLASSPATH of ${build.classpath}' />
+    <echo message='FileList: ${test.classpath2}' />
+
+    <javac srcdir='${src.dir}' destdir='${classes.dir}' target='1.1' source='1.3' debug='false'>
+      <classpath refid='build.classpath'/>
+    </javac>
+  </target>
+
+  <target name='build' depends='compile'>
+    <copy todir='${classes.dir}' file='${project.name}-build.properties' />
+    <jar destfile='${build.dir}/${project.name}-${build.version}.jar'>
+<!--
+    <jar destfile='${build.dir}/${project.name}-${build.version}-preserved.jar'>
+-->
+      <fileset dir='${classes.dir}'/>
+      <fileset dir='${src.res.dir}'/>
+      <manifest>
+        <attribute name='Built-By' value='${user.name}'/>
+        <attribute name='MicroEdition-Configuration' value='CLDC-1.1'/>
+        <attribute name='MicroEdition-Profile' value='MIDP-2.0'/>
+        <attribute name='MIDlet-1' value='Sportics.net,images/sportics_relief128x128.png,net.sportics.dni.rt.client.microedition.Sportics'/>
+        <attribute name='MIDlet-Info-URL' value='http://www.sportics.net/'/>
+        <attribute name='MIDlet-Name' value='Sportics'/>
+        <attribute name='MIDlet-Vendor' value='Sascha Kohlmann for Sportics'/>
+        <attribute name='MIDlet-Version' value='1.0 beta1'/>
+        <attribute name='MIDlet-Permissions' value='javax.microedition.io.Connector.http,javax.microedition.io.Connector.file.read,javax.microedition.io.Connector.file.write,javax.microedition.io.Connector.bluetooth.client,javax.microedition.location.Location,javax.microedition.io.Connector.bluetooth.server'/>
+        <attribute name='MIDlet-Description' value='Interconnetion between Cellphone and Bluetooth supporting vital devices'/>
+      </manifest>
+    </jar>
+
+    <javac srcdir='${test.dir}' destdir='${testclasses.dir}' debug='yes'>
+      <classpath>
+        <pathelement location='${classes.dir}'/>
+        <pathelement path='${build.classpath}'/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name='test' depends='build'>
+    <property name='test.classpath' refid='test.classpath'/>
+
+    <delete dir='${build.dir}/test-report'/>
+    <mkdir dir='${build.dir}/test-report'/>
+    <mkdir dir='${build.dir}/test-report/xml'/>
+    <mkdir dir='${build.dir}/test-report/html'/>
+<!--
+    <junit printsummary='withOutAndErr'
+             haltonfailure='no'
+             fork='yes'
+             forkMode='once'
+             reloading='false'
+             failureproperty='junitfailure'
+             errorproperty='juniterror'>
+      <classpath>
+        <pathelement location='${testclasses.dir}'/>
+        <pathelement location='${classes.dir}'/>
+        <pathelement path='${test.classpath}' />
+        <pathelement path='${build.classpath}'/>
+      </classpath>
+
+      <formatter type='xml' />
+
+      <batchtest todir='${build.dir}/test-report/xml'>
+        <fileset dir='${test.dir}'>
+          <include name='**/*Test.java'/>
+        </fileset>
+      </batchtest>
+      <sysproperty key='net.sportics.dni.rt.client.microedition.remote.SrtsApi.debug.url'
+                   value='http://localhost:9998/dni/srts/prepare' />
+      <sysproperty key='net.sportics.dni.rt.client.microedition.remote.LogManager.debug.sink'
+                   value='true' />
+      <sysproperty key='net.sportics.dni.rt.client.microedition.remote.ConfigManager.debug'
+                   value='true' />
+    </junit>
+-->
+<!--
+    <junitreport todir='${build.dir}/test-report/html' >
+      <fileset dir='${build.dir}/test-report/xml'>
+        <include name='TEST*.xml'/>
+      </fileset>
+      <report format='frames' todir='${build.dir}/test-report/html'/>
+    </junitreport> 
+-->
+    <fail if='junitfailure'/>
+    <fail if='juniterror'/>
+  </target>
+
+  <target name='javadoc' depends='init'>
+    <javadoc packagenames='org.*,net.*'
+               sourcepath='${src.dir}'
+               defaultexcludes='yes'
+               destdir='${javadoc.dir}'
+               author='true'
+               version='true'
+               use='true'
+               windowtitle='Sportics.net'>
+        <link href='http://java.sun.com/javame/reference/apis/jsr118/' />
+        <link href='http://java.sun.com/javame/reference/apis/jsr082/' />
+        <bottom><![CDATA[Copyright &#169; 2008, Sascha Kohlmann under the terms of the General Public License 3]]></bottom>
+      </javadoc>
+  </target>
+
+  <target name='guitest' depends='release'>
+    <property name='combined.classpath' refid='combined.classpath' />
+    <property name='combined.classpath' refid='combined.classpath' />
+    <echo message='combined.classpath CLASSPATH of ${combined.classpath}' />
+    <tempfile prefix='java.' suffix='.policy' property='guitest.policy' destdir='${target}' />
+    <echo file='${guitest.policy}' append='false'>
+        keystore "${basedir}/keystore";
+        grant {
+            permission java.security.AllPermission;
+        }
+        grant signedBy "${build.sign.signedBy}" {
+            permission java.security.AllPermission;
+        }
+    </echo>
+    <java classname='org.microemu.app.Main' fork='true'>
+      <arg value='net.sportics.dni.rt.client.microedition.Sportics' />
+      <sysproperty key='net.sportics.dni.rt.client.microedition.remote.SrtsApi.debug.url'
+                   value='http://localhost:9998/dni/srts/prepare' />
+      <sysproperty key='net.sportics.dni.rt.client.microedition.remote.SrtsApi.debug.delay'
+                   value='10' />
+      <sysproperty key='net.sportics.dni.rt.client.microedition.remote.LogManager.debug.sink'
+                   value='true' />
+      <sysproperty key='java.security.policy' value='=${guitest.policy}' />
+      <sysproperty key='swing.defaultlaf'
+                   value='swing.defaultlaf=javax.swing.plaf.synth.SynthLookAndFeel' />
+      <sysproperty key='net.sportics.dni.rt.client.microedition.remote.ConfigManager.debug'
+                   value='trsue' />
+      <classpath>
+        <pathelement path='${combined.classpath}' />
+<!--
+        <pathelement path='${build.classpath}' />
+        <pathelement path='${test.classpath}' />
+-->
+        <pathelement location='${build.dir}/${project.name}-${build.version}-preserved.jar' />
+        <pathelement path='${test.res.dir}' />
+      </classpath>
+    </java>
+  </target>
+
+  <target name='release' depends='test'>
+
+    <proguard>
+      -injars ${build.dir}/${project.name}-${build.version}.jar
+      -outjars ${build.dir}/${project.name}-${build.version}-preserved.jar
+      -libraryjars ${build.classpath}
+
+      -microedition
+
+      -keep public class net.sportics.dni.rt.client.microedition.Sportics
+      -keep public class net.sportics.dni.rt.client.microedition.device.DurationDevice
+      -keep public class net.sportics.dni.rt.client.microedition.device.Jsr179LocationDevice
+
+
+      -dontskipnonpubliclibraryclasses
+      -dontskipnonpubliclibraryclassmembers
+
+      -optimizationpasses 5
+      -overloadaggressively
+      -printmapping target/proguard.map
+      -flattenpackagehierarchy
+      -repackageclasses ''
+      -allowaccessmodification
+
+      -verbose
+      -printusage
+    </proguard>
+
+    <signjar keystore='${basedir}/keystore'
+             jar='${build.dir}/${project.name}-${build.version}-preserved.jar'
+             alias='${build.sign.alias}'
+             storepass='${build.sign.storepass}'
+             lazy='true' />
+  </target>
+
+  <target name='clean'>
+    <delete dir='${target}'/>
+  </target>
+</project>
