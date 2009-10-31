@@ -63,11 +63,11 @@ public final class SrtsApi implements Sink, Startable, Preparable {
 
     public static final String USASCII_ENC = "US-ASCII";
 
-    public static final String LIFE_TRACKING_ALLOWED_KEY = "life.allowed";
-    public static final String LIFE_TRACKING_ALLOWED_VALUE_YES = Boolean.TRUE.toString();
-    public static final String LIFE_TRACKING_ALLOWED_VALUE_NO = Boolean.FALSE.toString();
+    public static final String LIVE_TRACKING_ALLOWED_KEY = "life.allowed";
+    public static final String LIVE_TRACKING_ALLOWED_VALUE_YES = Boolean.TRUE.toString();
+    public static final String LIVE_TRACKING_ALLOWED_VALUE_NO = Boolean.FALSE.toString();
 
-    public static final String LIFE_TRACKING_INTERVAL_KEY = "life.interval";
+    public static final String LIVE_TRACKING_INTERVAL_KEY = "life.interval";
     public static final int LIFE_TRACKING_DEFAULT_INTERVAL_VALUE = 60 * 2;
 
 //    private static final String HTTP_HEADER_HOST = "Host";
@@ -134,12 +134,12 @@ public final class SrtsApi implements Sink, Startable, Preparable {
         this.platform = System.getProperty(PLATFORM);
 
         final ConfigManager configMgr = ConfigManager.getInstance();
-        final String life = configMgr.get(LIFE_TRACKING_ALLOWED_KEY,
-                                          LIFE_TRACKING_ALLOWED_VALUE_NO);
-        this.lifeAllowed = LIFE_TRACKING_ALLOWED_VALUE_NO.equalsIgnoreCase(life) ? false : true;
+        final String life = configMgr.get(LIVE_TRACKING_ALLOWED_KEY,
+                                          LIVE_TRACKING_ALLOWED_VALUE_NO);
+        this.lifeAllowed = LIVE_TRACKING_ALLOWED_VALUE_NO.equalsIgnoreCase(life) ? false : true;
         LOG.config("Life tracking: " + this.lifeAllowed);
 
-        final String interval = configMgr.get(LIFE_TRACKING_INTERVAL_KEY,
+        final String interval = configMgr.get(LIVE_TRACKING_INTERVAL_KEY,
                                               "" + LIFE_TRACKING_DEFAULT_INTERVAL_VALUE);
         try {
             final int i = Integer.parseInt(interval);
