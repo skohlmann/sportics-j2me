@@ -162,7 +162,7 @@ public final class ExtSportSessionController extends SportSessionController {
                         final String speed = String.valueOf(kmh);
                         final String speedAdjusted = StringUtil.decimalShorter(speed, 2);
                         ExtSportSessionController.this.data3.setValue(speedAdjusted);
-                        ExtSportSessionController.this.last1 = speedAdjusted;
+                        ExtSportSessionController.this.last3 = speedAdjusted;
                     } else {
                         ExtSportSessionController.this.data3.setValue(ExtSportSessionController.this.last3);
                     }
