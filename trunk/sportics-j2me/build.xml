@@ -112,7 +112,7 @@
         <attribute name='MIDlet-Info-URL' value='http://www.sportics.net/'/>
         <attribute name='MIDlet-Name' value='Sportics'/>
         <attribute name='MIDlet-Vendor' value='Sascha Kohlmann for Sportics'/>
-        <attribute name='MIDlet-Version' value='1.0 beta1'/>
+        <attribute name='MIDlet-Version' value='1.0.1'/>
         <attribute name='MIDlet-Permissions' value='javax.microedition.io.Connector.http,javax.microedition.io.Connector.file.read,javax.microedition.io.Connector.file.write,javax.microedition.io.Connector.bluetooth.client,javax.microedition.location.Location,javax.microedition.io.Connector.bluetooth.server'/>
         <attribute name='MIDlet-Description' value='Interconnetion between Cellphone and Bluetooth supporting vital devices'/>
       </manifest>

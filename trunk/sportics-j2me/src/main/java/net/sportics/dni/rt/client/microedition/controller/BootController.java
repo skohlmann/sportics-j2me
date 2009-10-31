@@ -89,7 +89,7 @@ public final class BootController extends AbstractController {
 //            cfgMgr.set(UserController.PASSWORD_KEY, "info4U");
 
             ConfigureController.setNewPositionTrackingDecision(true);
-            ConfigureController.setNewLifeTrackingDecision(true);
+            ConfigureController.setNewLiveTrackingDecision(true);
             ConfigureController.setNewBluetoothDecision(false);
 
             boolean loop = true;

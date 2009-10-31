@@ -37,7 +37,7 @@ public final class ConfigureController extends AbstractController {
 
     private static final ConfigManager CFG_MGR = ConfigManager.getInstance();
 
-    private static final String[] LIFE_TRACKING_INTERVAL =
+    private static final String[] LIVE_TRACKING_INTERVAL =
         {" 0.5 min", " 1 min", " 2 min", " 3 min", " 5 min", "10 min"};
 
     private Command selected = null;
@@ -62,12 +62,12 @@ public final class ConfigureController extends AbstractController {
                 handlePositionTrackingAllowedSelection();
             } else if ((this.selected == List.SELECT_COMMAND
                     || this.selected == MainController.SELECT) && list.isSelected(2)) {
-                handleLifeTrackingAllowedSelection();
-            } else if ((this.selected == List.SELECT_COMMAND
-                    || this.selected == MainController.SELECT) && list.isSelected(3)) {
-                handleBluetoothAllowedSelection();
+                handleLiveTrackingAllowedSelection();
             } else if ((this.selected == List.SELECT_COMMAND
                     || this.selected == MainController.SELECT) && list.isSelected(4)) {
+                handleBluetoothAllowedSelection();
+            } else if ((this.selected == List.SELECT_COMMAND
+                    || this.selected == MainController.SELECT) && list.isSelected(3)) {
                 handleIntervalSelection();
             } else if ((this.selected == List.SELECT_COMMAND
                     || this.selected == MainController.SELECT) && list.isSelected(5)) {
@@ -105,31 +105,31 @@ public final class ConfigureController extends AbstractController {
         setNewBluetoothDecision(decision);
     }
 
-    final void handleLifeTrackingAllowedSelection() {
+    final void handleLiveTrackingAllowedSelection() {
         final BooleanSelectionController ctrl = new BooleanSelectionController();
-        final boolean current = currentLifeTrackingDecision();
+        final boolean current = currentLiveTrackingDecision();
         ctrl.setCurrentDecision(current);
-        ctrl.setTitle("Life tracking");
-        ctrl.setQuestion("Allow life tracking?");
+        ctrl.setTitle("Live tracking");
+        ctrl.setQuestion("Allow live tracking?");
         final MIDlet midlet = this.getMIDlet();
         ctrl.handle(midlet);
         final boolean decision = ctrl.getCurrentDecision();
-        LOG.config("New life tracking decision: " + decision);
-        setNewLifeTrackingDecision(decision);
+        LOG.config("New live tracking decision: " + decision);
+        setNewLiveTrackingDecision(decision);
     }
 
     final void handleIntervalSelection() {
         final ListSelectionController ctrl = new ListSelectionController();
-        ctrl.addToList(LIFE_TRACKING_INTERVAL[0]);
-        ctrl.addToList(LIFE_TRACKING_INTERVAL[1]);
-        ctrl.addToList(LIFE_TRACKING_INTERVAL[2]);
-        ctrl.addToList(LIFE_TRACKING_INTERVAL[3]);
-        ctrl.addToList(LIFE_TRACKING_INTERVAL[4]);
-        ctrl.addToList(LIFE_TRACKING_INTERVAL[5]);
-        ctrl.setTitle("Select log level");
+        ctrl.addToList(LIVE_TRACKING_INTERVAL[0]);
+        ctrl.addToList(LIVE_TRACKING_INTERVAL[1]);
+        ctrl.addToList(LIVE_TRACKING_INTERVAL[2]);
+        ctrl.addToList(LIVE_TRACKING_INTERVAL[3]);
+        ctrl.addToList(LIVE_TRACKING_INTERVAL[4]);
+        ctrl.addToList(LIVE_TRACKING_INTERVAL[5]);
+        ctrl.setTitle("Select live tracking interval");
 
         final String value =
-            CFG_MGR.get(SrtsApi.LIFE_TRACKING_INTERVAL_KEY, "" + 120);
+            CFG_MGR.get(SrtsApi.LIVE_TRACKING_INTERVAL_KEY, "" + 120);
         if (("" + 30).equals(value)) {
             ctrl.setSelectedElement(0);
         } else if (("" + 60).equals(value)) {
@@ -144,7 +144,7 @@ public final class ConfigureController extends AbstractController {
             ctrl.setSelectedElement(2);
         }
 
-        ctrl.setTitle("Life tracking");
+        ctrl.setTitle("Live tracking");
         final MIDlet midlet = getMIDlet();
         ctrl.handle(midlet);
         final int selection = ctrl.getSelectedElement();
@@ -170,7 +170,7 @@ public final class ConfigureController extends AbstractController {
                 break;
         }
         LOG.debug("new interval time: " + interval + "s");
-        CFG_MGR.set(SrtsApi.LIFE_TRACKING_INTERVAL_KEY, "" + interval);
+        CFG_MGR.set(SrtsApi.LIVE_TRACKING_INTERVAL_KEY, "" + interval);
     }
 
     final List createList() {
@@ -178,12 +178,12 @@ public final class ConfigureController extends AbstractController {
 
         list.append("Login and password", null);
         final String position = isPositionAllowed();
-        final String life = isLifeTrackingAllowed();
+        final String live = isLiveTrackingAllowed();
         final String bt = isBluetoothAllowed();
         list.append(position, null);
-        list.append(life, null);
+        list.append(live, null);
+        list.append("Live tracking interval", null);
         list.append(bt, null);
-        list.append("Life tracking interval", null);
         list.append("Debug", null);
 
         list.addCommand(MainController.BACK);
@@ -211,11 +211,11 @@ public final class ConfigureController extends AbstractController {
         return "Position tracking not allowed";
     }
 
-    final String isLifeTrackingAllowed() {
-        if (currentLifeTrackingDecision()) {
-            return "Life tracking allowed";
+    final String isLiveTrackingAllowed() {
+        if (currentLiveTrackingDecision()) {
+            return "Live tracking allowed";
         }
-        return "Life tracking not allowed";
+        return "Live tracking not allowed";
     }
 
     final String isBluetoothAllowed() {
@@ -225,19 +225,19 @@ public final class ConfigureController extends AbstractController {
         return "Bluetooth not allowed";
     }
 
-    public static final boolean currentLifeTrackingDecision() {
-        final String allowed = CFG_MGR.get(SrtsApi.LIFE_TRACKING_ALLOWED_KEY,
-                                           SrtsApi.LIFE_TRACKING_ALLOWED_VALUE_YES);
-        if (SrtsApi.LIFE_TRACKING_ALLOWED_VALUE_YES.equalsIgnoreCase(allowed)) {
+    public static final boolean currentLiveTrackingDecision() {
+        final String allowed = CFG_MGR.get(SrtsApi.LIVE_TRACKING_ALLOWED_KEY,
+                                           SrtsApi.LIVE_TRACKING_ALLOWED_VALUE_YES);
+        if (SrtsApi.LIVE_TRACKING_ALLOWED_VALUE_YES.equalsIgnoreCase(allowed)) {
             return true;
         }
         return false;
     }
 
-    static final void setNewLifeTrackingDecision(final boolean desision) {
-        CFG_MGR.set(SrtsApi.LIFE_TRACKING_ALLOWED_KEY, 
-                    desision ? SrtsApi.LIFE_TRACKING_ALLOWED_VALUE_YES
-                             : SrtsApi.LIFE_TRACKING_ALLOWED_VALUE_NO);
+    static final void setNewLiveTrackingDecision(final boolean desision) {
+        CFG_MGR.set(SrtsApi.LIVE_TRACKING_ALLOWED_KEY,
+                    desision ? SrtsApi.LIVE_TRACKING_ALLOWED_VALUE_YES
+                             : SrtsApi.LIVE_TRACKING_ALLOWED_VALUE_NO);
     }
 
     public static final boolean currentPositionTrackingDecision() {
