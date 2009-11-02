@@ -1,5 +1,5 @@
 #labels Featured,install
-#How to download and install the Sportics J2ME application
+# How to download and install the Sportics J2ME application
 
 = Start =
 
