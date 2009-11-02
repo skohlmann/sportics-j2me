@@ -1,7 +1,7 @@
 #summary How to download and install the Sportics J2ME application
 #labels Featured,install
 
-= Start =
+= Instructions =
 
 There are two ways to install the Sportics J2ME application.
 
