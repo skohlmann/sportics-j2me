@@ -1,4 +1,5 @@
-# Instructions to build sportics-j2me for BlackBerry
+#summary Instructions to build sportics-j2me for BlackBerry
+#labels Featured
 
 = Introduction =
 
