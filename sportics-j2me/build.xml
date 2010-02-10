@@ -1,6 +1,7 @@
 <project name='Sportics.net Micoredition client' default='build' basedir='.'>
 
   <taskdef resource='proguard/ant/task.properties' classpath='${basedir}/contrib/proguard.jar' />
+  <typedef resource='bb-ant-defs.xml' classpath='${basedir}/contrib/bb-ant-tools.jar' />
 
   <property name='project.name' value='Sportics'/>
   <property name='src.dir' value='${basedir}/src/main/java'/>
@@ -13,6 +14,9 @@
   <property name='testclasses.dir' value='${build.dir}/test-classes'/>
   <property name='javadoc.dir' value='${build.dir}/javadoc'/>
   <property name='dist.dir' value='${target}/dist'/>
+  
+  <property name='classes.dir-bb' value='${build.dir}/classes-bb'/>
+  <property name='target-bb' value='${basedir}/target-bb' />
 
   <property environment='env'/>
 
@@ -83,6 +87,7 @@
     <mkdir dir='${testclasses.dir}'/>
     <mkdir dir='${classes.dir}/META-INF'/>
     <mkdir dir='${javadoc.dir}'/>
+
   </target>
 
   <target name='compile' depends='init'>
@@ -94,6 +99,18 @@
     <javac srcdir='${src.dir}' destdir='${classes.dir}' target='1.1' source='1.3' debug='false'>
       <classpath refid='build.classpath'/>
     </javac>
+  </target>
+  
+  <target name='build-bb' depends='init'>
+  
+    <mkdir dir='${target-bb}' />
+  
+    <rapc srcdir='${src.dir}' destdir='${target-bb}' output='${project.name}-${build.version}'
+          exepath='${basedir}/${build.bb.preverify}' jdehome='${basedir}/${build.bb.jde.home}'>
+      <jdp title='${project.name}' vendor='Sportics' version='${build.version}' type='midlet'
+           midletclass='net.sportics.dni.rt.client.microedition.Sportics' />
+    </rapc>
+  
   </target>
 
   <target name='build' depends='compile'>
@@ -266,5 +283,6 @@
 
   <target name='clean'>
     <delete dir='${target}'/>
+    <delete dir='${target-bb}'/>
   </target>
 </project>
